@@ -59,6 +59,7 @@
     "react-split-pane": "0.1.89",
     "react-table": "6.10.3",
     "react-tabs": "3.0.0",
+    "react-tooltip-lite": "1.11.1",
     "reactstrap": "7.1.0",
     "redux": "4.0.5",
     "redux-debounce": "1.0.1",
