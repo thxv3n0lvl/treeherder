@@ -1,6 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Badge, Button, Row, Col, UncontrolledTooltip } from 'reactstrap';
+import {
+  Badge,
+  Button,
+  Row,
+  Col,
+  UncontrolledTooltip,
+  UncontrolledCollapse,
+} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
@@ -158,38 +165,36 @@ class TestFailure extends React.PureComponent {
               key={inProgressJob.id}
             />
           ))}
+          {!!logLines.length && (
+            <span>
+              <Button
+                id={key}
+                className="border-0 text-info btn-sm p-1"
+                outline
+                onClick={this.toggleDetails}
+              >
+                {detailsShowing ? 'less...' : 'more...'}
+              </Button>
+              <UncontrolledCollapse toggler={key}>
+                {logLines.map(logLine => (
+                  <Row
+                    className="small text-monospace mt-2 ml-3"
+                    key={logLine.line_number}
+                  >
+                    <div className="pre-wrap text-break">
+                      {logLine.subtest}
+                      <Row className="ml-3">
+                        <div>{logLine.message}</div>
+                        <div>{logLine.signature}</div>
+                        <div>{logLine.stackwalk_stdout}</div>
+                      </Row>
+                    </div>
+                  </Row>
+                ))}
+              </UncontrolledCollapse>
+            </span>
+          )}
         </div>
-        {!!logLines.length && (
-          <div>
-            <Button
-              className="border-0 text-info bg-transparent p-1"
-              onClick={this.toggleDetails}
-            >
-              {detailsShowing ? 'less...' : 'more...'}
-            </Button>
-          </div>
-        )}
-        {logLines.map(logLine => (
-          <Row
-            className="small text-monospace mt-2 ml-3"
-            key={logLine.line_number}
-          >
-            {detailsShowing ? (
-              <div className="pre-wrap text-break">
-                {logLine.subtest}
-                <Row className="ml-3">
-                  <div>{logLine.message}</div>
-                  <div>{logLine.signature}</div>
-                  <div>{logLine.stackwalk_stdout}</div>
-                </Row>
-              </div>
-            ) : (
-              <div className="pre-wrap text-break">
-                {!!logLine.subtest && logLine.subtest.substr(0, 200)}
-              </div>
-            )}
-          </Row>
-        ))}
       </Col>
     );
   }
