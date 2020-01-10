@@ -47,7 +47,7 @@ class TestFailure extends React.PureComponent {
   };
 
   render() {
-    const { failure, repo, revision } = this.props;
+    const { failure, repo, revision, groupedBy } = this.props;
     const {
       testName,
       action,
@@ -67,21 +67,15 @@ class TestFailure extends React.PureComponent {
       passFailRatio,
     } = failure;
     const { detailsShowing } = this.state;
+    const borderStyle = groupedBy === 'none' ? 'border-secondary' : '';
 
     return (
-      <Col className="mt-2 mb-3 ml-2" key={key}>
-        <Row className="border-top border-secondary justify-content-between">
+      <Col className="m-3" key={key}>
+        <Row
+          className={`border-top ${borderStyle} justify-content-between mr-2`}
+        >
           <Row className="ml-1 w-100">
-            <span
-              color="secondary"
-              className="font-weight-bold text-uppercase mr-1"
-            >
-              {action} :
-            </span>
-            {testName}
-            {tier > 1 && (
-              <span className="ml-1 small text-muted">[tier-{tier}]</span>
-            )}
+            {groupedBy !== 'path' && <span>{testName}</span>}
             <span id={key} className="ml-auto mr-3">
               <strong>Pass/Fail Ratio:</strong>{' '}
               {Math.round(passFailRatio * 100)}%
@@ -114,8 +108,16 @@ class TestFailure extends React.PureComponent {
           >
             <FontAwesomeIcon icon={faRedo} title="Retrigger" />
           </Button>
-          <span>
-            {platform} {config}:
+          {groupedBy !== 'platform' && (
+            <span>
+              {platform} {config}:
+            </span>
+          )}
+          {tier > 1 && (
+            <span className="ml-1 small text-muted">[tier-{tier}]</span>
+          )}
+          <span color="secondary" className="text-uppercase ml-1 mr-1">
+            {action} :
           </span>
           {failJobs.map(failJob => (
             <Job
@@ -219,6 +221,7 @@ TestFailure.propTypes = {
   user: PropTypes.object.isRequired,
   revision: PropTypes.string.isRequired,
   notify: PropTypes.func.isRequired,
+  groupedBy: PropTypes.string.isRequired,
 };
 
 export default TestFailure;

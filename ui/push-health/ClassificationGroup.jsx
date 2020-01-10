@@ -88,8 +88,10 @@ class ClassificationGroup extends React.PureComponent {
       return group.reduce(
         (acc, test) => ({
           ...acc,
-          [test.platform]: acc[test.platform]
-            ? [...acc[test.platform], test]
+          [`${test.platform} ${test.config}`]: acc[
+            `${test.platform} ${test.config}`
+          ]
+            ? [...acc[`${test.platform} ${test.config}`], test]
             : [test],
         }),
         {},
@@ -141,45 +143,56 @@ class ClassificationGroup extends React.PureComponent {
           {hasRetriggerAll && (
             <Navbar>
               <Nav>
-                <ButtonGroup className="btn-sm">
-                  <Button
-                    title="Retrigger all 'Need Investigation' jobs once"
-                    onClick={() => this.retriggerAll(1)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faRedo}
-                      title="Retrigger"
-                      className="mr-2"
-                    />
-                    Retrigger all
-                  </Button>
-                  <ButtonDropdown
-                    isOpen={retriggerDropdownOpen}
-                    toggle={this.toggleRetrigger}
-                  >
-                    <DropdownToggle caret />
-                    <DropdownMenu>
-                      {[5, 10, 15].map(times => (
-                        <DropdownItem
-                          key={times}
-                          title={`Retrigger all 'Need Investigation' jobs ${times} times`}
-                          onClick={() => this.retriggerAll(times)}
-                        >
-                          Retrigger all {times} times
-                        </DropdownItem>
-                      ))}
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
                 <NavItem>
-                  <UncontrolledButtonDropdown className="btn-sm ml-1">
-                    <DropdownToggle
-                      className="btn-sm ml-1"
-                      id="groupTestsDropdown"
+                  <ButtonGroup size="sm">
+                    <Button
+                      title="Retrigger all 'Need Investigation' jobs once"
+                      onClick={() => this.retriggerAll(1)}
+                      size="sm"
                     >
-                      Group Tests By: {groupedBy}
+                      <FontAwesomeIcon
+                        icon={faRedo}
+                        title="Retrigger"
+                        className="mr-2"
+                      />
+                      Retrigger all
+                    </Button>
+                    <ButtonDropdown
+                      isOpen={retriggerDropdownOpen}
+                      toggle={this.toggleRetrigger}
+                      size="sm"
+                    >
+                      <DropdownToggle caret />
+                      <DropdownMenu>
+                        {[5, 10, 15].map(times => (
+                          <DropdownItem
+                            key={times}
+                            title={`Retrigger all 'Need Investigation' jobs ${times} times`}
+                            onClick={() => this.retriggerAll(times)}
+                          >
+                            Retrigger all {times} times
+                          </DropdownItem>
+                        ))}
+                      </DropdownMenu>
+                    </ButtonDropdown>
+                  </ButtonGroup>
+                </NavItem>
+                <NavItem>
+                  <UncontrolledButtonDropdown size="sm" className="ml-1">
+                    <DropdownToggle
+                      className="btn-sm ml-1 text-capitalize"
+                      id="groupTestsDropdown"
+                      caret
+                    >
+                      Group By: {groupedBy}
                     </DropdownToggle>
                     <DropdownMenu toggler="groupTestsDropdown">
+                      <DropdownItem
+                        className="btn-sm ml-1"
+                        onClick={() => this.setGroupedBy('none')}
+                      >
+                        None
+                      </DropdownItem>
                       <DropdownItem
                         className="btn-sm ml-1"
                         onClick={() => this.setGroupedBy('path')}
@@ -202,7 +215,11 @@ class ClassificationGroup extends React.PureComponent {
             {groupedTests &&
               Object.entries(groupedTests).map(([key, tests]) => (
                 <div>
-                  {key !== 'none' && <Badge>{key}</Badge>}
+                  {key !== 'none' && (
+                    <div className="h5 mt-3 border-bottom border-secondary">
+                      {key}
+                    </div>
+                  )}
                   {tests.map(failure => (
                     <TestFailure
                       key={failure.key}
@@ -213,6 +230,7 @@ class ClassificationGroup extends React.PureComponent {
                       user={user}
                       notify={notify}
                       groupedBy={groupedBy}
+                      className="ml-3"
                     />
                   ))}
                 </div>
