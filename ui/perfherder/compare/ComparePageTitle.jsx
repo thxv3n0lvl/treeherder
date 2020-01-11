@@ -14,6 +14,7 @@ export default class ComparePageTitle extends React.Component {
       pageTitle: props.pageTitleQueryParam || props.title,
       newPageTitle: props.pageTitleQueryParam || props.title,
     };
+    this.updateTabName(this.state.newPageTitle);
   }
 
   goToEditMode = () => {
@@ -31,6 +32,7 @@ export default class ComparePageTitle extends React.Component {
       newPageTitle: title,
     });
     this.changeQueryParam(newPageTitle);
+    this.updateTabName(newPageTitle);
   };
 
   editpageTitle = newPageTitle => {
@@ -44,7 +46,12 @@ export default class ComparePageTitle extends React.Component {
     if (newTitle !== pageTitle) {
       this.setState({ pageTitle: newTitle });
       this.changeQueryParam(newTitle);
+      this.updateTabName(newTitle);
     }
+  };
+
+  updateTabName = newTitle => {
+    document.title = newTitle;
   };
 
   changeQueryParam = newTitle => {
