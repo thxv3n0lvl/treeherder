@@ -7,7 +7,7 @@ import { Badge, FormGroup, Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
-import { legendCardText } from '../constants';
+import { graphColors, legendCardText } from '../constants';
 
 const LegendCard = ({
   series,
@@ -60,8 +60,9 @@ const LegendCard = ({
     updateState({ options, showModal: true });
   };
 
-  const resetParams = testData => {
-    const updates = { testData, colors: [...colors, ...[series.color]] };
+  const resetParams = (testData, newColors = null) => {
+    const updates = { testData };
+    if (newColors) updates.colors = newColors;
 
     if (
       selectedDataPoint &&
@@ -86,7 +87,26 @@ const LegendCard = ({
     }
 
     newData.splice(index, 1);
-    resetParams(newData);
+    // check for the last test to check if it was set to gray border and deselect
+    // (because it had exceeded supported colors) and reset its color to the color
+    // of the test that was removed
+    if (
+      newData[graphColors.length - 1] &&
+      newData[graphColors.length - 1].color[0] === 'border-secondary'
+    ) {
+      newData[graphColors.length - 1].color = series.color;
+      newData[graphColors.length - 1].visible = true;
+      newData[graphColors.length - 1].data = newData[
+        graphColors.length - 1
+      ].data.map(item => {
+        item.z = series.color;
+        return item;
+      });
+      resetParams(newData);
+    } else {
+      const newColors = [...colors, ...[series.color]];
+      resetParams(newData, newColors);
+    }
   };
 
   const getFrameworkName = frameworkId => {

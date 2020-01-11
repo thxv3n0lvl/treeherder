@@ -180,6 +180,7 @@ class GraphsView extends React.Component {
       alertSummaries.flat(),
       newColors,
     );
+
     this.setState({ colors: newColors });
     return graphData;
   };

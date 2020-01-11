@@ -693,6 +693,7 @@ export const retriggerJobs = async (results, times, props) => {
 export const createGraphData = (seriesData, alertSummaries, colors) =>
   seriesData.map(series => {
     const color = colors.pop();
+
     // signature_id, framework_id and repository_name are
     // not renamed in camel case in order to match the fields
     // returned by the performance/summary API (since we only fetch
